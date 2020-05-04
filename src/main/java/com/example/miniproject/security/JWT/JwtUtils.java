@@ -1,5 +1,6 @@
 package com.example.miniproject.security.JWT;
 
+import com.example.miniproject.security.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
