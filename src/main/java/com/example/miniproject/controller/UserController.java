@@ -1,13 +1,20 @@
 package com.example.miniproject.controller;
 
-import com.example.miniproject.payload.LoginRequest;
+import com.example.miniproject.domain.Role;
+import com.example.miniproject.domain.User;
+import com.example.miniproject.payload.request.LoginRequest;
+import com.example.miniproject.payload.request.SignupRequest;
+import com.example.miniproject.payload.response.MessageResponse;
+import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/user")
@@ -26,12 +35,22 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final UserRepository userRepository;
+
     private final JwtUtils jwtUtils;
+
+    private final
+    PasswordEncoder encoder;
 
 
     @GetMapping("/login")
     public String login(){
         return "login";
+    }
+
+    @GetMapping("/join")
+    public String join(){
+        return "join";
     }
 
     @PostMapping("/login")
@@ -53,7 +72,29 @@ public class UserController {
 
         response.addCookie(cookie);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-        return ResponseEntity.ok("hello");
+    @PostMapping("/join")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest){
+        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: 사용중인 유저이름입니다!"));
+        }
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: 사용중인 이메일입니다!"));
+        }
+
+        User user = new User(signupRequest.getUsername(),
+                signupRequest.getEmail(),
+                encoder.encode(signupRequest.getPassword()));
+
+        Set<String> strRoles = signupRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

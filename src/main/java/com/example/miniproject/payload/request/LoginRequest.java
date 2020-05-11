@@ -1,4 +1,4 @@
-package com.example.miniproject.payload;
+package com.example.miniproject.payload.request;
 
 import javax.validation.constraints.NotBlank;
 
