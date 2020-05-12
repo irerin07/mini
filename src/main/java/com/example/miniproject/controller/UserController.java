@@ -7,6 +7,7 @@ import com.example.miniproject.payload.request.SignupRequest;
 import com.example.miniproject.payload.response.MessageResponse;
 import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
+import com.example.miniproject.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -39,33 +42,38 @@ public class UserController {
 
     private final JwtUtils jwtUtils;
 
-    private final
-    PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
 
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
     @GetMapping("/join")
-    public String join(){
+    public String join() {
         return "join";
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
+        System.out.println(loginRequest.getUsername());
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
 
         Cookie cookie = new Cookie(
                 "JWTToken",
                 jwtUtils.generateJwtToken(authentication)
         );
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
 
         cookie.setPath("/");
         cookie.setMaxAge(Integer.MAX_VALUE);
@@ -76,7 +84,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest){
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
