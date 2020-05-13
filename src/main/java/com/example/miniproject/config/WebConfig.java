@@ -56,17 +56,17 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/join").permitAll()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/login").permitAll()
+                .antMatchers("/user/signin").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/signin").permitAll()
                 .antMatchers("/api/**").hasRole("USER")
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/user/login")
+                .loginProcessingUrl("/user/signin")
                 .loginPage("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/",true)
-                .failureUrl("/users/login?fail=true");
+                .failureUrl("/users/signin?fail=true");
         http.headers().frameOptions().sameOrigin();;
     }
 

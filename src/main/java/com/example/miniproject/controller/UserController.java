@@ -46,7 +46,7 @@ public class UserController {
     private final PasswordEncoder encoder;
 
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String login() {
         return "login";
     }
@@ -56,8 +56,8 @@ public class UserController {
         return "join";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
 
         System.out.println(loginRequest.getUsername());
 
@@ -71,6 +71,7 @@ public class UserController {
                 jwtUtils.generateJwtToken(authentication)
         );
 
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
@@ -79,13 +80,17 @@ public class UserController {
         cookie.setPath("/");
         cookie.setMaxAge(Integer.MAX_VALUE);
 
+        System.out.println(cookie.getName());
+        System.out.println(cookie.getValue());
+        System.out.println(cookie);
+
         response.addCookie(cookie);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> registerUser(@Valid SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()

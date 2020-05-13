@@ -13,7 +13,7 @@
 <body>
 로그인
 
-<form action="/user/login" method="POST">
+<form method="post" th:action="@{/user/signin}" action="#">
     <label>
         <input type="text" name="username" />
     </label>
