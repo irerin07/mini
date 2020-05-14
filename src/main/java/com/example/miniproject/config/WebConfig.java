@@ -59,6 +59,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/signin").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/signin").permitAll()
                 .antMatchers("/api/**").hasRole("USER")
+                .antMatchers("/test/**").permitAll()
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/user/signin")
