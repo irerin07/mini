@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping("/")
-    public String mainPage(){
+    public String mainPage(@CookieValue(value = "JWTToken", defaultValue = "Atta") String JWTToken){
+        System.out.println(JWTToken);
         return "index";
     }
 
