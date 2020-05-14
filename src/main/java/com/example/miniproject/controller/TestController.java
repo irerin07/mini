@@ -1,5 +1,6 @@
 package com.example.miniproject.controller;
 
+import com.example.miniproject.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,13 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class TestController {
 
+    private final JwtUtils jwtUtils;
+
     @GetMapping("/token")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String token(Model model, @CookieValue(value = "JWTToken", defaultValue = "Atta") String JWTToken){
-
-        model.addAttribute("token", JWTToken);
-
-        return "token";
+        if(jwtUtils.validateJwtToken(JWTToken)) {
+            String username = jwtUtils.getUserNameFromJwtToken(JWTToken);
+            model.addAttribute("token", JWTToken);
+            model.addAttribute("username", username);
+            return "token";
+        }
+        return "login";
     }
     @GetMapping("/all")
     public String allAccess() {
