@@ -46,7 +46,7 @@ public class UserController {
     private final PasswordEncoder encoder;
 
 
-    @GetMapping("/signin")
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
@@ -56,7 +56,7 @@ public class UserController {
         return "join";
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
 
         System.out.println("authenticateUser: " + loginRequest.getUsername());
