@@ -32,10 +32,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
-
 
     private final AuthenticationManager authenticationManager;
 
@@ -46,8 +45,9 @@ public class UserController {
     private final PasswordEncoder encoder;
 
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String login() {
+        System.out.println("signin");
         return "login";
     }
 
@@ -56,7 +56,7 @@ public class UserController {
         return "join";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
 
         System.out.println("authenticateUser: " + loginRequest.getUsername());
