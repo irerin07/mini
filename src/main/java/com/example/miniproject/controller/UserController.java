@@ -70,8 +70,6 @@ public class UserController {
                 "JWTToken",
                 jwtUtils.generateJwtToken(authentication)
         );
-
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
