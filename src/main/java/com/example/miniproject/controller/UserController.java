@@ -47,7 +47,7 @@ public class UserController {
 
     @GetMapping("/signin")
     public String login() {
-        System.out.println("signin");
+//        System.out.println("signin");
         return "login";
     }
 

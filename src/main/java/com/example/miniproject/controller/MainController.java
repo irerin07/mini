@@ -9,7 +9,6 @@ public class MainController {
 
     @GetMapping("/")
     public String mainPage(@CookieValue(value = "JWTToken", defaultValue = "Atta") String JWTToken){
-        System.out.println(JWTToken);
         return "index";
     }
 
