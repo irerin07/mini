@@ -4,6 +4,7 @@ import com.example.miniproject.domain.Role;
 import com.example.miniproject.domain.User;
 import com.example.miniproject.payload.request.LoginRequest;
 import com.example.miniproject.payload.request.SignupRequest;
+import com.example.miniproject.payload.response.JwtResponse;
 import com.example.miniproject.payload.response.MessageResponse;
 import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
@@ -56,35 +57,57 @@ public class UserController {
         return "join";
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
+//    @PostMapping("/signin")
+//    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
+//
+//        System.out.println("authenticateUser: " + loginRequest.getUsername());
+//
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        Cookie cookie = new Cookie(
+//                "JWTToken",
+//                jwtUtils.generateJwtToken(authentication)
+//        );
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+//
+//        cookie.setPath("/");
+//        cookie.setMaxAge(Integer.MAX_VALUE);
+//
+//        System.out.println(cookie.getName());
+//        System.out.println(cookie.getValue());
+//        System.out.println(cookie);
+//
+//        response.addCookie(cookie);
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
-        System.out.println("authenticateUser: " + loginRequest.getUsername());
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
+        System.out.println("authenticateUser Controller");
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-        Cookie cookie = new Cookie(
-                "JWTToken",
-                jwtUtils.generateJwtToken(authentication)
-        );
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        cookie.setPath("/");
-        cookie.setMaxAge(Integer.MAX_VALUE);
-
-        System.out.println(cookie.getName());
-        System.out.println(cookie.getValue());
-        System.out.println(cookie);
-
-        response.addCookie(cookie);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles));
     }
 
     @PostMapping("/join")

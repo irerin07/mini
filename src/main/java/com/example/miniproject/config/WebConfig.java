@@ -58,12 +58,13 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-//                .csrf()
-//                .disable()
+        http.cors().and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
+                .deleteCookies("JSESSIONID")
                 .permitAll().and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
@@ -71,13 +72,15 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/signin").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
                 .antMatchers("/test/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/api/auth/signin")
-                .usernameParameter("username")
-                .passwordParameter("password")
+                .loginPage("/api/auth/signin");
+//                .loginProcessingUrl("/api/auth/signin")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
 //                .defaultSuccessUrl("/",true)
-                .failureUrl("/api/auth/signin?fail=true");
+//                .failureUrl("/api/auth/signin?fail=true");
         http.headers().frameOptions().sameOrigin();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

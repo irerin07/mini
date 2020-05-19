@@ -23,16 +23,13 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
         System.out.println("generate token");
-
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(5).toInstant()))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
-
                 .compact();
     }
 
@@ -41,6 +38,7 @@ public class JwtUtils {
     }
 
     public boolean validateJwtToken(String authToken) {
+        System.out.println("validate token");
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
