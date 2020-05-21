@@ -19,10 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
@@ -89,16 +86,17 @@ public class UserController {
 //    }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
-        System.out.println("authenticateUser Controller");
-
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        System.out.println("postmapping signin");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
+        System.out.println("authentication");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
+        System.out.println("generated jwt");
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        System.out.println("userDetails");
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());

@@ -56,44 +56,44 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .deleteCookies("JSESSIONID")
-                .permitAll().and()
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/api/auth/join").permitAll()
-                .antMatchers("/api/auth/signin").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
-                .antMatchers("/test/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/api/auth/signin");
-//                .loginProcessingUrl("/api/auth/signin")
-//                .usernameParameter("username")
-//                .passwordParameter("password")
-//                .defaultSuccessUrl("/",true)
-//                .failureUrl("/api/auth/signin?fail=true");
-        http.headers().frameOptions().sameOrigin();
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().and().csrf().disable()
 //                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-//                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-//                .antMatchers("/api/test/**").permitAll()
-//                .anyRequest().authenticated();
-//
+//                .logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/")
+//                .deleteCookies("JSESSIONID")
+//                .permitAll().and()
+//                .authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers("/api/auth/join").permitAll()
+//                .antMatchers("/api/auth/signin").permitAll()
+//                .antMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
+//                .antMatchers("/test/**").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/api/auth/signin");
+////                .loginProcessingUrl("/api/auth/signin")
+////                .usernameParameter("username")
+////                .passwordParameter("password")
+////                .defaultSuccessUrl("/",true)
+////                .failureUrl("/api/auth/signin?fail=true");
+//        http.headers().frameOptions().sameOrigin();
 //        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 //    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/test/**").permitAll()
+                .anyRequest().authenticated();
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
 }
