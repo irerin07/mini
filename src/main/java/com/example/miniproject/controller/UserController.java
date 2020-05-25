@@ -29,23 +29,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final AuthenticationManager authenticationManager;
-
-    private final UserRepository userRepository;
-
-    private final JwtUtils jwtUtils;
-
-    private final PasswordEncoder encoder;
-
-
-    @GetMapping("/signin")
+    @GetMapping("/login")
     public String login() {
-//        System.out.println("signin");
         return "login";
     }
 
@@ -54,58 +44,6 @@ public class UserController {
         return "join";
     }
 
-//    @PostMapping("/signin")
-//    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
-//
-//        System.out.println("authenticateUser: " + loginRequest.getUsername());
-//
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        Cookie cookie = new Cookie(
-//                "JWTToken",
-//                jwtUtils.generateJwtToken(authentication)
-//        );
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
-//
-//        cookie.setPath("/");
-//        cookie.setMaxAge(Integer.MAX_VALUE);
-//
-//        System.out.println(cookie.getName());
-//        System.out.println(cookie.getValue());
-//        System.out.println(cookie);
-//
-//        response.addCookie(cookie);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
 
 
-    @PostMapping("/join")
-    public ResponseEntity<?> registerUser(@Valid SignupRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: 사용중인 유저이름입니다!"));
-        }
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: 사용중인 이메일입니다!"));
-        }
-
-        User user = new User(signupRequest.getUsername(),
-                signupRequest.getEmail(),
-                encoder.encode(signupRequest.getPassword()));
-
-        Set<String> strRoles = signupRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }
