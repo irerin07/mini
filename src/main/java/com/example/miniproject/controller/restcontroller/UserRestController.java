@@ -10,6 +10,7 @@ import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
 import com.example.miniproject.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -71,17 +72,11 @@ public class UserRestController {
         cookie.setPath("/");
         cookie.setMaxAge(Integer.MAX_VALUE);
 
-        System.out.println(cookie.getName());
-        System.out.println(cookie.getValue());
-        System.out.println(cookie);
-
         response.addCookie(cookie);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/");
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
     @PostMapping("/join")
