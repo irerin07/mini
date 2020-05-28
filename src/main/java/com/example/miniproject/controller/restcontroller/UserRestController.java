@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,7 @@ public class UserRestController {
     private final PasswordEncoder encoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
         System.out.println("postmapping signin");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -56,6 +58,24 @@ public class UserRestController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+
+        Cookie cookie = new Cookie(
+                "JWTToken",
+                jwt
+        );
+//        UserDetailsImpl userDetails2 = (UserDetailsImpl) authentication.getPrincipal();
+//        List<String> roles2 = userDetails.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
+
+        cookie.setPath("/");
+        cookie.setMaxAge(Integer.MAX_VALUE);
+
+        System.out.println(cookie.getName());
+        System.out.println(cookie.getValue());
+        System.out.println(cookie);
+
+        response.addCookie(cookie);
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
