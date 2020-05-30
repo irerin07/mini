@@ -1,11 +1,13 @@
 package com.example.miniproject.controller.restcontroller;
 
+import com.example.miniproject.domain.ERole;
 import com.example.miniproject.domain.Role;
 import com.example.miniproject.domain.User;
 import com.example.miniproject.payload.request.LoginRequest;
 import com.example.miniproject.payload.request.SignupRequest;
 import com.example.miniproject.payload.response.JwtResponse;
 import com.example.miniproject.payload.response.MessageResponse;
+import com.example.miniproject.repository.RoleRepository;
 import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
 import com.example.miniproject.security.service.UserDetailsImpl;
@@ -41,6 +43,8 @@ public class UserRestController {
     private final JwtUtils jwtUtils;
 
     private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
 
     private final PasswordEncoder encoder;
 
@@ -80,25 +84,57 @@ public class UserRestController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> registerUser(@Valid SignupRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: 사용중인 유저이름입니다!"));
+                    .body(new MessageResponse("Error: Username 중복!"));
         }
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: 사용중인 이메일입니다!"));
+                    .body(new MessageResponse("Error: Email 중복!"));
         }
 
-        User user = new User(signupRequest.getUsername(),
-                signupRequest.getEmail(),
-                encoder.encode(signupRequest.getPassword()));
+        // Create new user's account
+        User user = new User(signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signupRequest.getRole();
+        Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: ROLE_USER 찾을 수 없습니다.."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: ROLE_ADMIN 찾을 수 없습니다.."));
+                        roles.add(adminRole);
+
+                        break;
+                    case "mod":
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: ROLE_MODERATOR 찾을 수 없습니다.."));
+                        roles.add(modRole);
+
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: ROLE_USER 찾을 수 없습니다.."));
+                        roles.add(userRole);
+                }
+            });
+        }
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new MessageResponse("유저 정상 등록"));
     }
 }
