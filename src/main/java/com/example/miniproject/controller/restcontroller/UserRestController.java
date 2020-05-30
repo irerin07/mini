@@ -5,7 +5,6 @@ import com.example.miniproject.domain.Role;
 import com.example.miniproject.domain.User;
 import com.example.miniproject.payload.request.LoginRequest;
 import com.example.miniproject.payload.request.SignupRequest;
-import com.example.miniproject.payload.response.JwtResponse;
 import com.example.miniproject.payload.response.MessageResponse;
 import com.example.miniproject.repository.RoleRepository;
 import com.example.miniproject.repository.UserRepository;
@@ -68,10 +67,6 @@ public class UserRestController {
                 "JWTToken",
                 jwt
         );
-//        UserDetailsImpl userDetails2 = (UserDetailsImpl) authentication.getPrincipal();
-//        List<String> roles2 = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
 
         cookie.setPath("/");
         cookie.setMaxAge(Integer.MAX_VALUE);
