@@ -79,7 +79,7 @@ public class UserRestController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -98,7 +98,12 @@ public class UserRestController {
                 encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = signUpRequest.getRole();
+
         Set<Role> roles = new HashSet<>();
+
+        Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: ROLE_USER 찾을 수 없습니다.."));
+        roles.add(defaultRole);
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -129,7 +134,9 @@ public class UserRestController {
 
         user.setRoles(roles);
         userRepository.save(user);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/user/login");
 
-        return ResponseEntity.ok(new MessageResponse("유저 정상 등록"));
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 }
