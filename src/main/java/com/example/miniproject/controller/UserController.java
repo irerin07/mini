@@ -12,6 +12,7 @@ import com.example.miniproject.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,12 @@ public class UserController {
     @GetMapping("/join")
     public String join() {
         return "join";
+    }
+
+    @GetMapping("/mypage")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public String mypage() {
+        return "mypage";
     }
 
 
