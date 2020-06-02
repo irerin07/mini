@@ -4,21 +4,91 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="thymeleaf/layouts/default">
 <head>
+    <script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>로그인</title>
 </head>
 <body>
 로그인
 
-<form method="post" action="/api/auth/signin" >
+<form id="login_form" method="post" action="/api/auth/signin">
     <label>
-        <input type="text" name="username"/>
+        <input id="username" type="text" name="username"/>
     </label>
     <label>
-        <input type="password" name="password"/>
+        <input id="password" type="password" name="password"/>
     </label>
-<!--    <input type="hidden" id= "csrf-token" th:name="${_csrf.parameterName}" th:content="${_csrf.token}" />-->
-    <button type="submit">로그인</button>
+    <!--    <input type="hidden" id= "csrf-token" th:name="${_csrf.parameterName}" th:content="${_csrf.token}" />-->
+    <div>
+        <input type="submit" id="submitButton"  name="submitButton" value="Submit">
+    </div>
 </form>
 </body>
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<script>
+    $(document).ready(function() {
+        $("#login_form").submit(function(e) {
+            e.preventDefault();
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            console.log(username);
+            console.log(password);
+            let data = {
+                username : username,
+                password : password
+            }
+            let jsonData =  JSON.stringify(data);
+            $.ajax({
+                type: 'post',
+                url: "/api/auth/signin",
+                data : jsonData,
+                async: true,
+                contentType: "application/json",
+                error: [function (err) {
+                    console.log(err.toString());
+                    alert("서버가 응답하지 않습니다.");
+                    return false;
+                }],
+                success: [function (data) {
+                    // window.location.href= data.getResponseHeader('Location');
+                    window.location.replace('/');
+                }],
+            })
+        })
+    })
+    // function login() {
+    //     alert("login");
+    //     let username = document.getElementById('username');
+    //     let password = document.getElementById('password');
+    //     let form = document.getElementById("login_form");
+    //     let token = $("meta[name='_csrf']").attr("content");
+    //     let header = $("meta[name='_csrf_header']").attr("content");
+    //     $.ajax({
+    //         type: 'post',
+    //         url: "/api/auth/signin",
+    //         data: $(form).serialize(),
+    //         async: true,
+    //         contentType: "application/json",
+    //         error: [function (err) {
+    //             console.log(err.toString());
+    //             alert("서버가 응답하지 않습니다.");
+    //             return false;
+    //         }],
+    //         beforeSend: [function (xhr) {
+    //             alert("beforeSend")
+    //             xhr.setRequestHeader(header, token);
+    //         }],
+    //         success: [function (res) {
+    //             alert("login")
+    //             console.log(res);
+    //             let x = document.cookie;
+    //             console.log(x);
+    //
+    //         }],
+    //
+    //     })
+    // }
 
+    // /*]]>*/
+</script>
 </html>
