@@ -1,5 +1,6 @@
 package com.example.miniproject.controller;
 
+import com.example.miniproject.repository.BoardRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,15 +10,19 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
 
     private final JwtUtils jwtUtils;
+    private final BoardRepository boardRepository;
 
     @GetMapping("/all")
-    public String allAccess() {
+    public String allAccess(Model model) {
+
         return "public_board";
     }
 
