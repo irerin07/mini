@@ -1,5 +1,6 @@
 package com.example.miniproject.payload.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,5 +26,12 @@ public class SignupRequest {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    @Builder
+    public SignupRequest(String username, String email, String password){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
 }

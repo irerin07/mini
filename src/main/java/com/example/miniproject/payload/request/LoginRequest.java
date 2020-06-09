@@ -1,5 +1,7 @@
 package com.example.miniproject.payload.request;
 
+import lombok.Builder;
+
 import javax.validation.constraints.NotBlank;
 
 public class LoginRequest {
@@ -24,4 +26,5 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
