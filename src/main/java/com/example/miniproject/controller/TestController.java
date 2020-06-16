@@ -1,6 +1,6 @@
 package com.example.miniproject.controller;
 
-import com.example.miniproject.repository.BoardRepository;
+//import com.example.miniproject.repository.BoardRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TestController {
 
     private final JwtUtils jwtUtils;
-    private final BoardRepository boardRepository;
+//    private final BoardRepository boardRepository;
 
     @GetMapping("/all")
     public String allAccess(Model model) {

@@ -6,6 +6,7 @@ import com.example.miniproject.domain.User;
 import com.example.miniproject.payload.request.LoginRequest;
 import com.example.miniproject.payload.request.SignupRequest;
 import com.example.miniproject.payload.response.MessageResponse;
+import com.example.miniproject.payload.response.SigninResponse;
 import com.example.miniproject.repository.RoleRepository;
 import com.example.miniproject.repository.UserRepository;
 import com.example.miniproject.security.JWT.JwtUtils;
@@ -75,7 +76,7 @@ public class UserRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/");
 
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return new ResponseEntity<>(new SigninResponse(roles, headers), HttpStatus.OK);
     }
 
     @PostMapping("/join")

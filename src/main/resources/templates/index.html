@@ -1,42 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="thymeleaf/layouts/default">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>메인페이지</title>
 </head>
 <body>
 <!--<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
 <h1>Mini Project</h1>
-<a th:href="@{/user/login}">login</a>
-<a th:href="@{/user/join}">join</a>
-<a th:href="@{/test/all}">public board</a>
-<a th:href="@{/test/user}">user board</a>
-<a th:href="@{/test/mode}">moderator board</a>
-<a th:href="@{/test/admin}">admin board</a>
+<div sec:authorize="isAnonymous()" style="margin-right: 25px;">
+    <a class="btn btn-dark" th:href="@{/user/login}"> 로그인</a>
+</div>
+<div sec:authorize="isAnonymous()" style="margin-right: 25px;">
+    <a class="btn btn-dark" th:href="@{/user/join}"> 회원가입</a>
+</div>
+<div sec:authorize="isAnonymous()" style="margin-right: 25px;">
+    <a th:href="@{/test/all}">public board</a>
+</div>
+<div sec:authorize="hasAuthority('ROLE_USER')" style="margin-right: 25px;">
+    <a th:href="@{/test/user}">user board</a>
+</div>
+<div sec:authorize="hasAuthority('ROLE_MODERATOR')" style="margin-right: 25px;">
+    <a th:href="@{/test/mode}">moderator board</a>
+</div>
+<div sec:authorize="hasAuthority('ROLE_ADMIN')" style="margin-right: 25px;">
+    <a th:href="@{/test/admin}">admin board</a>
+</div>
 
-<!--<a th:href="@{/challenges/library}">Library</a>-->
-<!--<a th:href="@{/bookmark/list}">Bookmark</a>-->
-<!--<a th:href="@{/notices/list}">Notice</a>-->
+
 </body>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         let apiToken = document.cookie;
-        if(apiToken !== null) {
+        if (apiToken !== null) {
             console.log(apiToken);
-        }else {
+        } else {
             console.log('no token found');
             console.log()
         }
     })
+
     function admin() {
         let apiToken = document.cookie;
         console.log(apiToken);
         $.ajax({
             beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Bearer " + apiToken);
+                xhr.setRequestHeader("Authorization", "Bearer " + apiToken);
             }
         })
 
