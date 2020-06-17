@@ -28,27 +28,33 @@
 <div sec:authorize="hasAuthority('ROLE_ADMIN')" style="margin-right: 25px;">
     <a th:href="@{/test/admin}">admin board</a>
 </div>
+<a onclick="admin()">admin</a>
+
+<button onclick="admin()">admin board</button>
 
 
 </body>
 <script>
-    $(document).ready(function () {
-        let apiToken = document.cookie;
-        if (apiToken !== null) {
-            console.log(apiToken);
-        } else {
-            console.log('no token found');
-            console.log()
-        }
-    })
-
     function admin() {
         let apiToken = document.cookie;
-        console.log(apiToken);
+        alert(apiToken)
         $.ajax({
             beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + apiToken);
-            }
+                xhr.setRequestHeader("Authorization", "Bearer " + apiToken.substring(9));
+            },
+            type: 'get',
+            url: '/test/admin',
+            contentType: "application/json",
+            error: [function (err) {
+                console.log(err);
+                alert("서버가 응답하지 않습니다.");
+                return false;
+            }],
+            success: [function (data) {
+                // window.location.href= data.getResponseHeader('Location');
+                 console.log(data)
+                //window.location.replace('/');
+            }],
         })
 
     }
