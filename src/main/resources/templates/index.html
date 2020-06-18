@@ -45,14 +45,17 @@
             type: 'get',
             url: '/test/admin',
             contentType: "application/json",
+            datatype: "html",
             error: [function (err) {
                 console.log(err);
                 alert("서버가 응답하지 않습니다.");
                 return false;
             }],
-            success: [function (data) {
+            success: [function (data, xhr) {
                 // window.location.href= data.getResponseHeader('Location');
-                 console.log(data)
+                console.log(data)
+                console.log(xhr.getResponseHeader('Location'));
+                // window.location.href = data.redirect;
                 //window.location.replace('/');
             }],
         })
