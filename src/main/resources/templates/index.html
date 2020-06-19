@@ -32,6 +32,8 @@
 
 <button onclick="admin()">admin board</button>
 
+<div id="board"></div>
+
 
 </body>
 <script>
@@ -51,12 +53,9 @@
                 alert("서버가 응답하지 않습니다.");
                 return false;
             }],
-            success: [function (data, xhr) {
-                // window.location.href= data.getResponseHeader('Location');
-                console.log(data)
-                console.log(xhr.getResponseHeader('Location'));
-                // window.location.href = data.redirect;
-                //window.location.replace('/');
+            success: [function (data) {
+                console.log(data);
+                window.location.href = "/test/admin";
             }],
         })
 

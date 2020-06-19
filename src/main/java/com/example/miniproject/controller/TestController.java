@@ -41,7 +41,7 @@ public class TestController {
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView adminAccess() {
-        return new ModelAndView("admin_board");
+    public String adminAccess() {
+        return "admin_board";
     }
 }
