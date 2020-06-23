@@ -28,7 +28,8 @@
 <div sec:authorize="hasAuthority('ROLE_ADMIN')" style="margin-right: 25px;">
     <a th:href="@{/test/admin}">admin board</a>
 </div>
-<a onclick="admin()">admin</a>
+<!--<a th:href="@{/test/admin}" onclick="admin()">admin</a>-->
+<a th:href="@{/test/admin}">admin</a>
 
 <button onclick="admin()">admin board</button>
 
