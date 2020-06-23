@@ -47,7 +47,6 @@
             type: 'get',
             url: '/test/admin',
             contentType: "application/json",
-            datatype: "html",
             error: [function (err) {
                 console.log(err);
                 alert("서버가 응답하지 않습니다.");
@@ -55,7 +54,8 @@
             }],
             success: [function (data) {
                 console.log(data);
-                $('html').html(data)
+                window.location = "/test/admin";
+
             }],
         })
 

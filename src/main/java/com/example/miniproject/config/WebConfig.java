@@ -66,6 +66,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/test/all").permitAll()
+                .antMatchers("/test/admin").hasAnyRole("ADMIN")
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
