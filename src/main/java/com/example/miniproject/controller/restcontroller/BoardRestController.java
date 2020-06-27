@@ -20,6 +20,7 @@ public class BoardRestController {
     @GetMapping("/admin")
     public ModelAndView boardList(ModelAndView model) {
         model.addObject("Model", model);
+
         return model;
     }
 
