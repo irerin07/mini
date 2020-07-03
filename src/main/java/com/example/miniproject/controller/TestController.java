@@ -1,6 +1,7 @@
 package com.example.miniproject.controller;
 
 //import com.example.miniproject.repository.BoardRepository;
+
 import com.example.miniproject.security.JWT.JwtUtils;
 import com.sun.deploy.net.HttpResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +42,19 @@ public class TestController {
         return "mod_board";
     }
 
+    //    @GetMapping("/admin")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ModelAndView adminAccess(ModelAndView modelAndView) {
+//        modelAndView = new ModelAndView("admin_board");
+//        modelAndView.addObject("message", "Baeldung");
+//
+//        return modelAndView;
+//    }
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView adminAccess(ModelAndView modelAndView) {
-        modelAndView = new ModelAndView("admin_board");
-        modelAndView.addObject("message", "Baeldung");
+    public String adminAccess() {
 
-        return modelAndView;
+        return "admin_board";
     }
 }
 
